@@ -16,11 +16,15 @@ UPDATE_MENU = """
 press "d" to delete the flashcard:
 press "e" to edit the flashcard:
 """
+CHECK_LEARN_MENU = """
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+"""
 FIRST_QUESTION = "What is the Capital city of Germany?"
 FIRST_ANSWER = "Berlin"
 SECOND_QUESTION = "What is the Capital city of Italy?"
 SECOND_ANSWER = "Rome"
-NEW_SECOND_QUESTION = "Italy"
+NEW_SECOND_QUESTION = "Italy?"
 NEW_SECOND_ANSWER = "Rome is the capital of Italy"
 Q_S = """
 press "y" to see the answer:
@@ -43,12 +47,14 @@ class FlashCardTest(StageTest):
                                 self.test1_input8,
                                 self.test1_input9,
                                 self.test1_input10,
+                                'n',
                                 self.test1_input11,
+                                'n',
                                 self.test1_input12,
-                                ])
-            , TestCase(stdin=[self.test2_input1,
-                              self.test2_input2,
-                              self.test2_input3])
+                                ]),
+                TestCase(stdin=[self.test2_input1,
+                                self.test2_input2,
+                                self.test2_input3])
             , TestCase(stdin=['1',
                               '4',
                               self.test3_input1,
@@ -66,7 +72,9 @@ class FlashCardTest(StageTest):
                               self.test5_input6])
             , TestCase(stdin=['2',
                               self.test1_input10,
+                              'n',
                               self.test1_input11,
+                              'n',
                               self.test1_input12
                               ])
             , TestCase(stdin=['2',
@@ -79,7 +87,46 @@ class FlashCardTest(StageTest):
                               self.test7_input8])
             , TestCase(stdin=['2',
                               self.test8_input2,
-                              self.test8_input3])]
+                              self.test8_input3])
+            , TestCase(stdin=['2',
+                              'y',
+                              self.test9_input3])
+            , TestCase(stdin=['2',
+                              'n',
+                              'y',
+                              '2',
+                              'y',
+                              'y',
+                              '2',
+                              'n',
+                              'y',
+                              '2',
+                              self.test10_input11])
+            , TestCase(stdin=['1',
+                              '1',
+                              FIRST_QUESTION,
+                              FIRST_ANSWER,
+                              '2',
+                              '2',
+                              'n',
+                              'y',
+                              '2',
+                              'n',
+                              'y',
+                              '2',
+                              'n',
+                              'n',
+                              '2',
+                              'n',
+                              'y',
+                              '2',
+                              'y',
+                              'y',
+                              '2',
+                              'y',
+                              'y',
+                              '2',
+                              self.test10_input11])]
 
     def check_main_menu(self, out):
         main_menu_list = MAIN_MENU.strip().split('\n')
@@ -120,15 +167,14 @@ class FlashCardTest(StageTest):
             if len(out_first_line) == 0:
                 raise WrongAnswerException("output can't be empty")
             else:
-                if len(out_list) < 4:
-                    raise WrongAnswerException("It seems that the output for the question \n"
-                                               "\"{0}\"\n"
-                                               "is incorrectly formatted. \n"
-                                               "Make sure you output the feature menu.".format(out_list[0]))
-                question_menu = f'{out_list[1]}\n{out_list[2]}\n{out_list[3]}'
                 if not 'Question' == out_first_line[0]:
                     raise WrongAnswerException(
-                        f'{out_first_line[0]} is wrong!\nplease check extra spaces, misspelling or ":"')
+                        f'The line \"{out_first_line[0]}\" is wrong!\nPlease check extra spaces, misspelling or ":"')
+                if len(out_list) < 4:
+                    raise WrongAnswerException("Incorrect number of lines is found for the menu after the question \n"
+                                               f"\"{out_first_line[0]}\"\n"
+                                               f"Please, format your output according to the example.")
+                question_menu = f'{out_list[1]}\n{out_list[2]}\n{out_list[3]}'
                 if not question == out_first_line[1].strip():
                     raise WrongAnswerException('wrong question is printed')
                 if not Q_S.strip() == question_menu.strip():
@@ -198,11 +244,9 @@ class FlashCardTest(StageTest):
         if len(question) == 0:
             raise WrongAnswerException("The output can't be empty")
         else:
-            question.pop(0)
             question = '\n'.join(question)
             if self.check_practice_question(question.strip(), SECOND_QUESTION):
-                if self.check_practice_answer(out, FIRST_ANSWER):
-                    return 'n'
+                return 'n'
 
     def test1_input12(self, out):
         if self.check_main_menu(out.strip()):
@@ -359,6 +403,40 @@ class FlashCardTest(StageTest):
 
         return CheckResult.correct()
 
+    def test9_input3(self, out):
+        out_put_list = out.strip().split('\n')
+        if len(out_put_list) == 0:
+            raise WrongAnswerException("The output can't be empty")
+        else:
+            first_line = out_put_list[0].strip().split(':')
+            if len(first_line) < 2:
+                raise WrongAnswerException("The ':' is missing in output")
+            else:
+                out_put_list.pop(0)
+                check_learn_menu = '\n'.join(out_put_list)
+                if not first_line[0].strip() == 'Answer':
+                    raise WrongAnswerException('Answer is missing or misspelling')
+                if not first_line[1].strip() == NEW_SECOND_ANSWER:
+                    raise WrongAnswerException('before check_learn_menu the answer should be printed')
+                if not check_learn_menu.strip() == CHECK_LEARN_MENU.strip():
+                    raise WrongAnswerException(
+                        f'your check_learn_menu:\n{check_learn_menu} \ncorrect check_learn_ menu\n'
+                        f'{CHECK_LEARN_MENU} ')
+
+        return CheckResult.correct()
+
+    def test10_input11(self, out):
+        out_put = out.strip().split('\n')
+        if len(out_put) == 0:
+            raise WrongAnswerException("The output can't be empty")
+        else:
+            first_line = out_put[0].strip()
+            if not first_line == 'There is no flashcard to practice!':
+                raise WrongAnswerException('After three successive correct answers the question should be deleted from '
+                                           'database\nand the first line in the output should be like this:'
+                                           ' \nThere is no flashcard to practice!')
+        return CheckResult.correct()
+
 
 if __name__ == '__main__':
-    FlashCardTest('memtool.step3').run_tests()
+    FlashCardTest().run_tests()

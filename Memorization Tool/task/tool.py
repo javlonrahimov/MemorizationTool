@@ -14,6 +14,7 @@ class Flashcard(Base):
     id = Column(Integer, primary_key=True)
     question = Column(String)
     answer = Column(String)
+    box = Column(Integer)
 
 
 Base.metadata.create_all(engine)
@@ -70,12 +71,14 @@ press "n" to skip:
 press "u" to update:\n""")
                 if command == "y":
                     print(f'Answer: {flashcard.answer}\n')
+                    learning_menu(flashcard)
                     break
                 elif command == "n":
+                    learning_menu(flashcard)
                     break
                 elif command == "u":
                     update_menu(flashcard)
-                    break
+                    continue
                 else:
                     print(f'{command} is not an option\n')
 
@@ -94,7 +97,7 @@ def add_new_flashcard():
             continue
         break
 
-    save_data(Flashcard(question=question, answer=answer))
+    save_data(Flashcard(question=question, answer=answer, box=0))
     flashcards.clear()
     flashcards.extend(session.query(Flashcard).all())
 
@@ -114,9 +117,26 @@ press "e" to edit the flashcard:\n""")
             continue
 
 
+def learning_menu(flashcard):
+    while True:
+        command = input("""press "y" if your answer is correct:
+press "n" if your answer is wrong:\n""")
+        if command == "y":
+            change_box(flashcard, True)
+            break
+        elif command == "n":
+            change_box(flashcard, False)
+            break
+        else:
+            print(f"{command} is not an option")
+            continue
+
+
 def delete_flashcard(flashcard):
     session.delete(flashcard)
     session.commit()
+    flashcards.clear()
+    flashcards.extend(session.query(Flashcard).all())
 
 
 def edit_flashcard(flashcard):
@@ -129,9 +149,27 @@ def edit_flashcard(flashcard):
     entries = session.query(Flashcard).all()
 
     for i in entries:
-        if i.question == flashcard.question:
+        if i.id == flashcard.id:
             i.answer = new_answer
             i.question = new_question
+            session.commit()
+    flashcards.clear()
+    flashcards.extend(session.query(Flashcard).all())
+
+
+def change_box(flashcard, is_promote):
+    entries = session.query(Flashcard).all()
+    for i in entries:
+        if i.id == flashcard.id:
+            if is_promote:
+                if i.box < 2:
+                    i.box = i.box + 1
+                else:
+                    delete_flashcard(flashcard)
+            else:
+                if i.box > 0:
+                    i.box = i.box - 1
+
             session.commit()
 
 

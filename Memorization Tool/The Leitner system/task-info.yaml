@@ -451,6 +451,12 @@ files:
     if __name__ == '__main__':
         FlashCardTest().run_tests()
   learner_created: false
+- name: flashcard.db
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/159/stages/829/implement#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 08 Mar 2021 07:50:28 UTC
 record: -1
