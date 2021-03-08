@@ -1,0 +1,256 @@
+<h2>Description</h2>
+
+<p>We know how to create flashcards, but it is not enough. At the beginning of the project, we mentioned a special technique that can help us with our task of creating a useful memorizing tool. Don't worry, we are about to take off and our flashcards will help. We are going to implement the Leitner system in our program. In short, it introduces the concept of spaced repetition proposed by Sebastian Leitner, a German Scientist. Leitner's system suggests reviewing cards at increased intervals. For more details, refer to the VirtualSalt <a target="_blank" href="https://www.virtualsalt.com/learn10.html" rel="noopener noreferrer nofollow">article</a> on the Leitner system. </p>
+
+<p><img alt="" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Leitner_system_animation.gif/250px-Leitner_system_animation.gif"></p>
+
+<p>This animation shows the logical sequence according to which the memorization tool should work. During Session 1, study the cards of the first box. In Session 2, study the cards in the first and second boxes. In Session 3, study the cards in all three boxes. If your answer is correct, the card goes to the next box for the next session. If your answer is wrong, the card returns to the beginning box (the first box). If you give the correct answers to the cards in the third box, it means you've learned them, and you don't need those cards anymore, so you can remove them from the database. </p>
+
+<h2>Objectives</h2>
+
+<p>After displaying each question, you need to ask users whether their answers are correct or not. To do this we need to create another menu, let's call it the learning menu (5):</p>
+
+<pre><code class="java">press "y" if your answer is correct:
+press "n" if your answer is wrong:</code></pre>
+
+<p>Implement the spaced repetition algorithm described above. New flashcards and cards with wrong answers should go to the first box. Delete the cards with three successive correct answers from the database.</p>
+
+<p><div class="alert alert-primary">Output the <code class="java">&lt;wrong key&gt; is not an option</code> message when a user presses the wrong key. Other parts of the program should operate as in the previous stages.</div></p>
+
+<h2>Examples</h2>
+
+<p><strong>Example 1:</strong></p>
+
+<pre><code class="java">1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 2
+There is no flashcard to practice!
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 1
+1. Add a new flashcard
+2. Exit
+&gt; 1
+
+Question:
+&gt; What is the Capital of Turkey?
+Answer:
+&gt; Ankara
+
+1. Add a new flashcard
+2. Exit
+&gt; 1
+
+Question:
+&gt; What is the capital of Croatia?
+Answer:
+&gt; Zagreb
+
+1. Add a new flashcard
+2. Exit
+&gt; 2
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt;&gt; 2
+
+Question: What is the Capital of Turkey?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Ankara
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; y
+
+
+Question: What is the capital of Croatia?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Zagreb
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; n
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt;&gt; 2
+
+Question: What is the Capital of Turkey?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Ankara
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; y
+
+
+Question: What is the capital of Croatia?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; n
+
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; n
+
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt;&gt; 2
+
+Question: What is the Capital of Turkey?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Ankara
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; y
+
+
+Question: What is the capital of Croatia?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Zagreb
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; y
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 2
+
+Question: What is the capital of Croatia?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Zagreb
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; y
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 2
+
+Question: What is the capital of Croatia?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Zagreb
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt; y
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 2
+There is no flashcard to practice!
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 3
+
+Bye!
+</code></pre>
+
+<p><strong>Example 2:</strong></p>
+
+<pre><code class="java">1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 6
+6 is not an option
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 1
+1. Add a new flashcard
+2. Exit
+&gt; 3
+
+3 is not  an option
+
+1. Add a new flashcard
+2. Exit
+&gt; 1
+
+Question:
+&gt;
+Question:
+&gt; what is the capital of Iran?
+Answer:
+&gt; Tehran
+
+1. Add a new flashcard
+2. Exit
+&gt; 2
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 2
+
+Question: what is the capital of Iran?
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; 6
+
+6 is not an option
+press "y" to see the answer:
+press "n" to skip:
+press "u" to update:
+&gt; y
+
+Answer: Tehran
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt;&gt;
+
+ is not an option
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt;&gt; b
+
+b is not an option
+press "y" if your answer is correct:
+press "n" if your answer is wrong:
+&gt;&gt; y
+
+1. Add flashcards
+2. Practice flashcards
+3. Exit
+&gt; 3
+
+Bye!</code></pre>
