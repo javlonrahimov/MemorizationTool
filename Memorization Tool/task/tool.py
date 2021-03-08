@@ -65,11 +65,16 @@ def practise_flashcards():
         for flashcard in flashcards:
             print(f'Question: {flashcard.question}')
             while True:
-                command = input('Please press "y" to see the answer or press "n" to skip:\n')
+                command = input("""press "y" to see the answer:
+press "n" to skip:
+press "u" to update:\n""")
                 if command == "y":
                     print(f'Answer: {flashcard.answer}\n')
                     break
                 elif command == "n":
+                    break
+                elif command == "u":
+                    update_menu(flashcard)
                     break
                 else:
                     print(f'{command} is not an option\n')
@@ -92,6 +97,42 @@ def add_new_flashcard():
     save_data(Flashcard(question=question, answer=answer))
     flashcards.clear()
     flashcards.extend(session.query(Flashcard).all())
+
+
+def update_menu(flashcard):
+    while True:
+        command = input("""press "d" to delete the flashcard:
+press "e" to edit the flashcard:\n""")
+        if command == "d":
+            delete_flashcard(flashcard)
+            break
+        elif command == "e":
+            edit_flashcard(flashcard)
+            break
+        else:
+            print(f"{command} is not an option")
+            continue
+
+
+def delete_flashcard(flashcard):
+    session.delete(flashcard)
+    session.commit()
+
+
+def edit_flashcard(flashcard):
+    print(f"\ncurrent question: {flashcard.question}")
+    new_question = input("please write a new question:\n") or flashcard.question
+
+    print(f"\ncurrent answer: {flashcard.answer}")
+    new_answer = input("please write a new answer:\n") or flashcard.answer
+
+    entries = session.query(Flashcard).all()
+
+    for i in entries:
+        if i.question == flashcard.question:
+            i.answer = new_answer
+            i.question = new_question
+            session.commit()
 
 
 show_main_menu()
